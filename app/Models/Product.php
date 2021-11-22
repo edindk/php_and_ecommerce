@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $primaryKey = 'productID';
 
-    protected $fillable = ['categoryID', 'name', 'description', 'partNumber', 'price', 'inStock', 'isActive', 'createDate', 'modifiedDate'];
+    protected $fillable = ['categoryID', 'name', 'description', 'partNumber', 'price', 'inStock', 'isActive', 'imageFile', 'createDate', 'modifiedDate'];
 
     protected $guarded = ['productID'];
 }
