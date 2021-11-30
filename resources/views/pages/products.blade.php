@@ -2,8 +2,21 @@
 
 @section('content')
     @include('layouts.headers.customCards')
-
+    <script>
+        function updateCategoryName(categoryName) {
+            document.getElementById('dropdownMenuButton').innerHTML = categoryName;
+        }
+    </script>
     <div class="container-fluid mt--7">
+        @if(session('message'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                <span class="alert-text"><strong>Opdateret!</strong> {{session('message')}}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
         <div class="row">
             <div class="col">
                 <div class="card">
@@ -25,106 +38,149 @@
                             </tr>
                             </thead>
                             <tbody class="list">
-                            <tr>
-                                <th scope="row">
-                                    <div class="media align-items-center">
-                                        <a href="#" class="avatar rounded-circle mr-3">
-                                            <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
-                                        </a>
-                                        <div class="media-body">
-                                            <span class="name mb-0 text-sm">Argon Design System</span>
+                            @foreach($products as $product)
+
+                                <tr>
+                                    <th scope="row">
+                                        <div class="media align-items-center">
+                                            <a href="" class="avatar rounded-circle mr-3">
+                                                <img alt="Image placeholder" src="../assets/img/theme/bootstrap.jpg">
+                                            </a>
+                                            <div class="media-body">
+                                                <span class="name mb-0 text-sm">{{$product->name}}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </th>
-                                <td class="budget">
-                                    $2500 USD
-                                </td>
-                                <td>
-                                <span class="badge badge-dot mr-4">
-                                <i class="bg-warning"></i>
-                                <span class="status">pending</span>
-                                </span>
-                                </td>
-                                <td>
-                                    <div class="avatar-group">
-                                        <a href="#" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                                           data-original-title="Ryan Tompson">
-                                            <img alt="Image placeholder" src="../assets/img/theme/team-1.jpg">
-                                        </a>
-                                        <a href="#" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                                           data-original-title="Romina Hadid">
-                                            <img alt="Image placeholder" src="../assets/img/theme/team-2.jpg">
-                                        </a>
-                                        <a href="#" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                                           data-original-title="Alexander Smith">
-                                            <img alt="Image placeholder" src="../assets/img/theme/team-3.jpg">
-                                        </a>
-                                        <a href="#" class="avatar avatar-sm rounded-circle" data-toggle="tooltip"
-                                           data-original-title="Jessica Doe">
-                                            <img alt="Image placeholder" src="../assets/img/theme/team-4.jpg">
-                                        </a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <span class="completion mr-2">60%</span>
-                                        <div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-warning" role="progressbar"
-                                                     aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-                                                     style="width: 60%;"></div>
+                                    </th>
+                                    <td class="budget">
+                                        {{$product->categoryName}}
+                                    </td>
+                                    <td class="budget">
+                                        {{substr($product->description, 0, 20)}} ...
+                                    </td>
+                                    <td>
+                                        {{$product->price}} DKK
+                                    </td>
+                                    <td>
+                                        {{$product->inStock}}
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="dropdown">
+                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                <a class="dropdown-item" data-toggle="modal"
+                                                   data-target="#modal{{$product->productID}}">Rediger</a>
+                                                <a class="dropdown-item" href="#">Another action</a>
+                                                <a class="dropdown-item" href="#">Something else here</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <div class="modal fade" id="modal{{$product->productID}}" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">{{$product->name}}</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form role="form" action="{{url('/products/update')}}" method="post">
+                                                    @csrf()
+                                                    <div class="form-group mb-3">
+                                                        <input type="hidden" id="productID" name="productID"
+                                                               value="{{$product->productID}}">
+                                                        <div class="mb-2 ml-1">
+                                                            <span>Produkt navn</span>
+                                                        </div>
+                                                        <div
+                                                            class="input-group input-group-merge input-group-alternative">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"></span>
+                                                            </div>
+                                                            <input class="form-control" placeholder="{{$product->name}}"
+                                                                   type="text" name="name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <div class="mb-2 ml-1">
+                                                            <span>Kategori</span>
+                                                        </div>
+                                                        <select class="form-control"
+                                                                name="category">
+                                                            @foreach($categories as $category)
+                                                                <option
+                                                                    onclick="updateCategoryName('{{$category->categoryName}}')">{{$category->categoryName}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <div class="mb-2 ml-1">
+                                                            <span>Beskrivelse</span>
+                                                        </div>
+                                                        <div
+                                                            class="input-group input-group-merge input-group-alternative">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"></span>
+                                                            </div>
+                                                            <textarea class="form-control"
+                                                                      id="exampleFormControlTextarea1" rows="3"
+                                                                      placeholder="{{$product->description}}"
+                                                                      name="description"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <div class="mb-2 ml-1">
+                                                            <span>Pris</span>
+                                                        </div>
+                                                        <div
+                                                            class="input-group input-group-merge input-group-alternative">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"></span>
+                                                            </div>
+                                                            <input class="form-control"
+                                                                   placeholder="{{$product->price}}"
+                                                                   type="number" name="price">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <div class="mb-2 ml-1">
+                                                            <span>Lagerstatus</span>
+                                                        </div>
+                                                        <div
+                                                            class="input-group input-group-merge input-group-alternative">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"></span>
+                                                            </div>
+                                                            <input class="form-control"
+                                                                   placeholder="{{$product->inStock}}"
+                                                                   type="number" name="inStock">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">
+                                                            Luk
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Gem</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-                                </td>
-                                <td class="text-right">
-                                    <div class="dropdown">
-                                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
+                                </div>
+                            @endforeach
                             </tbody>
                         </table>
-                    </div>
-                    <!-- Card footer -->
-                    <div class="card-footer py-4">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fas fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
                     </div>
                 </div>
             </div>
         </div>
-
         @include('layouts.footers.auth')
     </div>
 @endsection
