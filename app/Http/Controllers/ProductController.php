@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductCategory;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -11,10 +13,15 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function showProducts()
     {
-        $product = Products::all();
-        return view('products.index', compact('products','products'));
+        $products = Product::all();
+        $categories = ProductCategory::all();
+        foreach ($products as $product) {
+            $category = ProductCategory::find($product->productCategoryID);
+            $product->categoryName = $category->categoryName;
+        }
+        return view('pages.products', ['products' => $products, 'categories' => $categories]);
     }
 
     /**
@@ -30,12 +37,12 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'product_name' => 'required',
         ]);
 
@@ -49,41 +56,50 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $products = Products::findOrFail($id);
-        return view('products.show', compact('products','products' ));
+        return view('products.show', compact('products', 'products'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
 
-    public function edit($id)
+    public function edit(Request $request)
     {
-        $product = Products::find($id);
+        $product = Product::find($request->productID);
+        $category = ProductCategory::where('categoryName', $request->category)->first();
 
-        return view('products.show', compact('products','products' ));
+        $product->name = $request->name;
+        $product->productCategoryID = $category->productCategoryID;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->inStock = $request->inStock;
+
+        $product->save();
+
+        return redirect()->route('products')->with('message', 'Produkt opdateret');
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $Products = Products::findOrFail($id);
 
-        $this->validate($request,[
+        $this->validate($request, [
             'product_name' => 'required',
         ]);
 
@@ -97,7 +113,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
