@@ -39,7 +39,6 @@
                             </thead>
                             <tbody class="list">
                             @foreach($products as $product)
-
                                 <tr>
                                     <th scope="row">
                                         <div class="media align-items-center">

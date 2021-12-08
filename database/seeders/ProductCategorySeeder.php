@@ -2,13 +2,17 @@
 
 namespace Database\Seeders;
 
-use Faker\Factory as Faker;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use JeroenZwart\CsvSeeder\CsvSeeder;
 
-class ProductCategorySeeder extends Seeder
+class ProductCategorySeeder extends CsvSeeder
 {
+    public function __construct()
+    {
+        $this->file = '/database/seeds/csvs/productCategories.csv';
+        $this->timestamps = false;
+    }
+
     /**
      * Run the database seeds.
      *
@@ -16,13 +20,8 @@ class ProductCategorySeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker::create();
-        for ($i = 1; $i < 20; $i++) {
-            Storage::disk('local')->makeDirectory('public/categoryImages/' . $i);
-            DB::table('productCategories')->insert([
-                'categoryName' => $faker->name,
-                'imageFile' => storage_path()
-            ]);
-        }
+        // Recommended when importing larger CSVs
+        DB::disableQueryLog();
+        parent::run();
     }
 }

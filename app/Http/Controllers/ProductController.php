@@ -74,6 +74,13 @@ class ProductController extends Controller
 
     public function edit(Request $request)
     {
+        // Mangler validering https://laravel.com/docs/8.x/validation
+        $request->validate([
+            'title' => 'required|unique:posts|max:255',
+            'author.name' => 'required',
+            'author.description' => 'required',
+        ]);
+
         $product = Product::find($request->productID);
         $category = ProductCategory::where('categoryName', $request->category)->first();
 
