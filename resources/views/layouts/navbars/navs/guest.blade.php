@@ -31,12 +31,6 @@
                         <span class="nav-link-inner--text">{{ __('Dashboard') }}</span>
                     </a>
                 </li>
-{{--                <li class="nav-item">--}}
-{{--                    <a class="nav-link nav-link-icon" href="{{ route('profile.edit') }}">--}}
-{{--                        <i class="ni ni-single-02"></i>--}}
-{{--                        <span class="nav-link-inner--text">{{ __('Profile') }}</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
             </ul>
         </div>
     </div>

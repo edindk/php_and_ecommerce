@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ProductCategories extends Migration
+class City extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class ProductCategories extends Migration
      */
     public function up()
     {
-        Schema::create('productCategories', function (Blueprint $table) {
-            $table->id('productCategoryID');
-            $table->string('categoryName')->nullable(false);
-            $table->string('imageFile')->nullable(true);
+        Schema::create('city', function (Blueprint $table) {
+            $table->id('zipCode');
+            $table->string('city');
         });
     }
 
@@ -27,6 +26,6 @@ class ProductCategories extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('productCategories');
+        Schema::dropIfExists('city');
     }
 }

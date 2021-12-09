@@ -18,12 +18,12 @@ class Products extends Migration
             $table->id('productID');
             $table->foreignId('productCategoryID')->references('productCategoryID')->on('productCategories');
             $table->string('name')->nullable(false);
-            $table->string('description')->nullable(false);
+            $table->string('description', 2000)->nullable(false);
             $table->integer('partNumber')->nullable(false);
             $table->float('price')->nullable(false);
             $table->integer('inStock')->nullable(false);
-            $table->tinyInteger('isActive')->nullable(false);
-            $table->string('imageFile')->nullable(false);
+            $table->tinyInteger('isActive')->nullable(false)->default(1);
+            $table->string('imageFile')->nullable(true);
             $table->dateTime('createDate')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('modifiedDate')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

@@ -1,13 +1,16 @@
 <?php
+
 namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use JeroenZwart\CsvSeeder\CsvSeeder;
 
-class ProductSeeder extends CsvSeeder
+class InvoiceLineSeeder extends CsvSeeder
 {
     public function __construct()
     {
-        $this->file = '/database/seeds/csvs/products.csv';
+        $this->file = '/database/seeds/csvs/invoiceLines.csv';
         $this->timestamps = false;
     }
 
