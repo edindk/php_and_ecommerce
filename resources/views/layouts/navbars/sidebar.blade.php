@@ -88,11 +88,9 @@
                         <i class="ni ni-collection text-primary"></i> {{ __('Produkter') }}
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('table') }}">
-                      <i class="ni ni-bullet-list-67 text-default"></i>
-                      <span class="nav-link-text">Tables</span>
+                    <a class="nav-link" href="{{ route('orders') }}">
+                        <i class="ni ni-collection text-primary"></i> {{ __('Ordrer') }}
                     </a>
                 </li>
             </ul>

@@ -71,7 +71,6 @@ class HelperController
             }
         }
         return $monthExist;
-
     }
 
     public static function AddRemainingMonths($data)
@@ -81,7 +80,7 @@ class HelperController
         foreach ($months as $month) {
             $monthExist = HelperController::SearchForMonth($month, $data);
             if (!$monthExist) {
-                array_push($data, array('date' => (string)$month, 'total' => 0));
+                array_push($data, array('date' => $month, 'total' => 0));
             }
         }
         $data = HelperController::SortData($data);
@@ -117,7 +116,6 @@ class HelperController
                 }
             }
         }
-
         return HelperController::AddRemainingMonths($data);
     }
 

@@ -22,7 +22,7 @@ class Products extends Migration
             $table->integer('partNumber')->nullable(false);
             $table->float('price')->nullable(false);
             $table->integer('inStock')->nullable(false);
-            $table->tinyInteger('isActive')->nullable(false);
+            $table->tinyInteger('isActive')->nullable(false)->default(1);
             $table->string('imageFile')->nullable(true);
             $table->dateTime('createDate')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('modifiedDate')->default(DB::raw('CURRENT_TIMESTAMP'));

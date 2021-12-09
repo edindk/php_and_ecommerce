@@ -18,25 +18,28 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
 
     // Product routes
-    Route::post('/products/update', [\App\Http\Controllers\ProductController::class, 'edit'])->name('productsUpdate');
     Route::get('/products', [\App\Http\Controllers\ProductController::class, 'showProducts'])->name('products');
+    Route::post('/products/update', [\App\Http\Controllers\ProductController::class, 'edit'])->name('productsUpdate');
+    Route::post('/products/create', [\App\Http\Controllers\ProductController::class, 'create'])->name('create');
+    Route::get('/products/delete/{productID}', [\App\Http\Controllers\ProductController::class, 'delete'])->name('delete');
+    Route::get('/products/search/{name?}', [\App\Http\Controllers\ProductController::class, 'search'])->name('search');
+
+    // Order routes
+    Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'showOrders'])->name('orders');
+    Route::get('/orders/sortbynewestdate', [\App\Http\Controllers\OrderController::class, 'sortByNewestDate'])->name('sortByNewestDate');
+    Route::get('/orders/sortbyoldestdate', [\App\Http\Controllers\OrderController::class, 'sortByOldestDate'])->name('sortByOldestDate');
+    Route::get('/orders/sortbytotal', [\App\Http\Controllers\OrderController::class, 'sortByTotal'])->name('sortByTotal');
 
     // Dashboard routes
     Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('home');
 
+    // User and profile routes
     Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
     Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
     Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
-    Route::get('upgrade', function () {
-        return view('pages.upgrade');
-    })->name('upgrade');
-    Route::get('map', function () {
-        return view('pages.maps');
-    })->name('map');
-    Route::get('icons', function () {
-        return view('pages.icons');
-    })->name('icons');
-    Route::get('table-list', function () {
+
+    // Route to be deleted
+    Route::get('/table-list', function () {
         return view('pages.tables');
     })->name('table');
     Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
