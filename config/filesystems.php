@@ -40,6 +40,11 @@ return [
             'root' => storage_path('app/public/product_images'),
         ],
 
+        'category_images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/category_images'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

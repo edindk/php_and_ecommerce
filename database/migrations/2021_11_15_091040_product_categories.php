@@ -17,6 +17,8 @@ class ProductCategories extends Migration
             $table->id('productCategoryID');
             $table->string('categoryName')->nullable(false);
             $table->string('imageFile')->nullable(true);
+            $table->dateTime('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->dateTime('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

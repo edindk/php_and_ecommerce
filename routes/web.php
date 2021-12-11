@@ -24,6 +24,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/products/delete/{productID}', [\App\Http\Controllers\ProductController::class, 'delete'])->name('delete');
     Route::get('/products/search/{name?}', [\App\Http\Controllers\ProductController::class, 'search'])->name('search');
 
+    // Category routes
+    Route::post('/categories/create', [\App\Http\Controllers\CategoryController::class, 'store'])->name('categoriesCreate');
+    Route::post('/categories/update', [\App\Http\Controllers\CategoryController::class, 'edit'])->name('categoriesUpdate');
+    Route::get('/categories/delete/{id}', [\App\Http\Controllers\CategoryController::class, 'destroy'])->name('categoriesDelete');
+    Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'showCategories'])->name('categories');
+
     // Order routes
     Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'showOrders'])->name('orders');
     Route::get('/orders/sortbynewestdate', [\App\Http\Controllers\OrderController::class, 'sortByNewestDate'])->name('sortByNewestDate');

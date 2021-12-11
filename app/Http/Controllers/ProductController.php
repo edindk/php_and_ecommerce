@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-
     public function showProducts()
     {
         $products = Product::all();
@@ -90,7 +89,7 @@ class ProductController extends Controller
             $category = ProductCategory::find($product->productCategoryID);
             $product->categoryName = $category->categoryName;
         }
-        
+
         return $products;
     }
 }
