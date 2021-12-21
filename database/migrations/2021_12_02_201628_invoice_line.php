@@ -16,7 +16,7 @@ class InvoiceLine extends Migration
         Schema::create('invoiceLines', function (Blueprint $table) {
             $table->id('invoiceLineID');
             $table->foreignId('productID')->references('productID')->on('products');
-            $table->foreignId('invoiceID')->references('invoiceID')->on('invoices');
+            $table->foreignId('invoiceID');
             $table->integer('quantity')->nullable(false);
             $table->decimal('subTotal')->nullable(false);
         });

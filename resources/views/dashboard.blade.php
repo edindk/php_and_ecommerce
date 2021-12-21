@@ -63,8 +63,8 @@
 
         let salesInDkk = () => {
             const ctx = document.getElementById('salesInDkk').getContext('2d');
-            const labelsForLineChart = @json($labelsForLineChart);
-            const dataForLineChart = @json($dataForLineChart);
+            const labelsForLineChart = @json($totalAndDateData['dates']);
+            const dataForLineChart = @json($totalAndDateData['total']);
 
             const salesInDkkChart = new Chart(ctx, {
                 type: 'line',
@@ -95,8 +95,8 @@
 
         let ordersPerMonth = () => {
             const ctx = document.getElementById('ordersPerMonth').getContext('2d');
-            const labelsForBarChart = @json($labelsForBarChart);
-            const dataForBarChart = @json($dataForBarChart);
+            const labelsForBarChart = @json($totalAndDateData['dates']);
+            const dataForBarChart = @json($totalAndDateData['numbOfOrders']);
 
             const ordersPerMonth = new Chart(ctx, {
                 type: 'bar',

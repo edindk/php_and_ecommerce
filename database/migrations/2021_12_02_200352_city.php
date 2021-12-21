@@ -16,6 +16,8 @@ class City extends Migration
         Schema::create('city', function (Blueprint $table) {
             $table->id('zipCode');
             $table->string('city');
+            $table->string('lat')->nullable(true);
+            $table->string('lng')->nullable(true);
         });
     }
 

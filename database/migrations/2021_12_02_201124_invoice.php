@@ -14,7 +14,7 @@ class Invoice extends Migration
     public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
-            $table->id('invoiceID');
+            $table->id('invoiceID')->unique(false);
             $table->foreignId('customerID')->references('customerID')->on('customers');
             $table->dateTime('paidDate')->nullable(false);
             $table->decimal('total')->nullable(false);
