@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Customer;
+use App\Models\Invoice;
 use GuzzleHttp\Client;
 use PHPUnit\TextUI\Help;
 
@@ -68,8 +70,9 @@ class HelperController
         return $monthToReturn;
     }
 
-    public static function GenerateDataWithTotalAndDate($invoices)
+    public static function GenerateDataWithTotalAndDate()
     {
+        $invoices = Invoice::all();
         $tempData = HelperController::$tempData;
 
         foreach ($invoices as $invoice) {
@@ -96,8 +99,9 @@ class HelperController
         return $dataToReturn;
     }
 
-    public static function GetLatLng($customers)
+    public static function GetLatLng()
     {
+        $customers = Customer::all();
         $arrOfLatLng = [];
 
         foreach ($customers as $customer) {

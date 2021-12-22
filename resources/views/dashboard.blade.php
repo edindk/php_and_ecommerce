@@ -3,6 +3,8 @@
 @section('content')
     @include('layouts.headers.customCards')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <div class="container-fluid mt--7">
         <div class="row">
             <div class="col-xl-8 mb-5 mb-xl-0">
@@ -14,9 +16,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-light" role="status" style="width: 100px; height: 100px"
+                             id="salesInDKKSpinner">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <!-- Sales in DKK -->
-                        <canvas id="salesInDkk" width="400" height="200"></canvas>
+                        <canvas id="salesInDkk" width="400" height="520"></canvas>
                     </div>
                 </div>
             </div>
@@ -29,9 +37,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border mt-3" role="status" style="width: 100px; height: 100px"
+                             id="salesPrMonthSpinner">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <!-- Orders per month -->
-                        <canvas id="ordersPerMonth" class="chart-canvas" height="320"></canvas>
+                        <canvas id="ordersPerMonth" class="chart-canvas" height="520"></canvas>
                     </div>
                 </div>
             </div>
@@ -45,6 +59,12 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="d-flex justify-content-center">
+                            <div class="spinner-border mt-3" role="status" style="width: 100px; height: 100px"
+                                 id="customerOverviewSpinner">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
                         <!-- Customer location overview -->
                         <div id="map" style="height: 800px; width: 100%"></div>
                     </div>
@@ -59,12 +79,27 @@
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
     <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
+        // Enable pusher logging - don't include this in production
+        //Pusher.logToConsole = true;
 
-        let salesInDkk = () => {
+        var pusher = new Pusher('e5217b92bbac90d908ee', {
+            cluster: 'eu'
+        });
+
+        var channel = pusher.subscribe('test');
+        channel.bind('App\\Events\\ShowDashboardData', function (data) {
+            salesInDkk(data['chartData']);
+            ordersPerMonth(data['chartData']);
+            mapInit(data['latLngData']);
+        });
+
+
+        let salesInDkk = (chartData) => {
             const ctx = document.getElementById('salesInDkk').getContext('2d');
-            const labelsForLineChart = @json($totalAndDateData['dates']);
-            const dataForLineChart = @json($totalAndDateData['total']);
+            const labelsForLineChart = chartData['dates'];
+            const dataForLineChart = chartData['total'];
 
             const salesInDkkChart = new Chart(ctx, {
                 type: 'line',
@@ -90,13 +125,14 @@
                     }
                 }
             });
-
+            var salesInDKKSpinner = document.getElementById('salesInDKKSpinner');
+            salesInDKKSpinner.style.display = "none";
         };
 
-        let ordersPerMonth = () => {
+        let ordersPerMonth = (chartData) => {
             const ctx = document.getElementById('ordersPerMonth').getContext('2d');
-            const labelsForBarChart = @json($totalAndDateData['dates']);
-            const dataForBarChart = @json($totalAndDateData['numbOfOrders']);
+            const labelsForBarChart = chartData['dates'];
+            const dataForBarChart = chartData['numbOfOrders'];
 
             const ordersPerMonth = new Chart(ctx, {
                 type: 'bar',
@@ -118,12 +154,12 @@
                     }
                 }
             });
-
+            var salesPrMonthSpinner = document.getElementById('salesPrMonthSpinner');
+            salesPrMonthSpinner.style.display = "none";
         };
 
-        let mapInit = () => {
-            let listOfLatLng = @json($latLngData);
-
+        let mapInit = (latLngData) => {
+            let listOfLatLng = latLngData
 
             // Tømmer markers kollektionen
             let markers = [];
@@ -154,11 +190,8 @@
                 // Pusher markeren ind i markers kollektionen
                 markers.push(marker)
             }
-
+            var customerOverviewSpinner = document.getElementById('customerOverviewSpinner');
+            customerOverviewSpinner.style.display = "none";
         }
-        salesInDkk();
-        ordersPerMonth();
-        mapInit();
-
     </script>
 @endpush
