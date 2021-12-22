@@ -83,24 +83,27 @@
     <script>
         // Enable pusher logging - don't include this in production
         //Pusher.logToConsole = true;
-
         var pusher = new Pusher('e5217b92bbac90d908ee', {
             cluster: 'eu'
         });
 
         var channel = pusher.subscribe('test');
+
         channel.bind('App\\Events\\ShowDashboardData', function (data) {
             salesInDkk(data['chartData']);
             ordersPerMonth(data['chartData']);
             mapInit(data['latLngData']);
         });
 
-
         let salesInDkk = (chartData) => {
-            const ctx = document.getElementById('salesInDkk').getContext('2d');
-            const labelsForLineChart = chartData['dates'];
-            const dataForLineChart = chartData['total'];
+            let labelsForLineChart = Object.values(chartData).map(function (item) {
+                return item['date'];
+            });
+            let dataForLineChart = Object.values(chartData).map(function (item) {
+                return item['total'];
+            });
 
+            const ctx = document.getElementById('salesInDkk').getContext('2d');
             const salesInDkkChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -128,12 +131,15 @@
             var salesInDKKSpinner = document.getElementById('salesInDKKSpinner');
             salesInDKKSpinner.style.display = "none";
         };
-
         let ordersPerMonth = (chartData) => {
-            const ctx = document.getElementById('ordersPerMonth').getContext('2d');
-            const labelsForBarChart = chartData['dates'];
-            const dataForBarChart = chartData['numbOfOrders'];
+            let labelsForBarChart = Object.values(chartData).map(function (item) {
+                return item['date'];
+            });
+            let dataForBarChart = Object.values(chartData).map(function (item) {
+                return item['numbOfOrders'];
+            });
 
+            const ctx = document.getElementById('ordersPerMonth').getContext('2d');
             const ordersPerMonth = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -157,13 +163,10 @@
             var salesPrMonthSpinner = document.getElementById('salesPrMonthSpinner');
             salesPrMonthSpinner.style.display = "none";
         };
-
         let mapInit = (latLngData) => {
             let listOfLatLng = latLngData
-
             // Tømmer markers kollektionen
             let markers = [];
-
             // Opretter nyt Google Maps og opbevarer det i map
             let map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 7,

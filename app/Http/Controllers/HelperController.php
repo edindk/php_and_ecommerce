@@ -29,23 +29,16 @@ class HelperController
     public static function GenerateDataWithTotalAndDate()
     {
         $invoices = Invoice::all();
-        $tempData = HelperController::$tempData;
+        $dataToReturn = HelperController::$tempData;
 
         foreach ($invoices as $invoice) {
             $date = new \DateTime($invoice->paidDate);
             $date = date_format($date, 'm');
 
-            $tempData[(int)$date]['total'] += $invoice->total;
-            $tempData[(int)$date]['numbOfOrders'] += 1;
+            $dataToReturn[(int)$date]['total'] += $invoice->total;
+            $dataToReturn[(int)$date]['numbOfOrders'] += 1;
         }
 
-        $dataToReturn = ['dates' => array(), 'total' => array(), 'numbOfOrders' => array()];
-
-        foreach ($tempData as $data) {
-            array_push($dataToReturn['dates'], $data['date']);
-            array_push($dataToReturn['total'], $data['total']);
-            array_push($dataToReturn['numbOfOrders'], $data['numbOfOrders']);
-        }
         return $dataToReturn;
     }
 
