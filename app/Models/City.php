@@ -13,6 +13,6 @@ class City extends Model
     protected $table = 'city';
     protected $primaryKey = 'zipCode';
 
-    protected $fillable = ['city'];
+    protected $fillable = ['zipCode', 'city', 'lat', 'lng'];
 
 }

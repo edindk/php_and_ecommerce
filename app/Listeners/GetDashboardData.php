@@ -3,8 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ShowDashboardData;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Http\Controllers\HelperController;
 
 class GetDashboardData
 {
@@ -26,7 +25,6 @@ class GetDashboardData
      */
     public function showDashboardData(ShowDashboardData $event)
     {
-        //var_dump($event->chartData);
-        //var_dump($event->latLngData);
+        //
     }
 }

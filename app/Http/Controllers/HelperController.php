@@ -38,7 +38,6 @@ class HelperController
             $dataToReturn[(int)$date]['total'] += $invoice->total;
             $dataToReturn[(int)$date]['numbOfOrders'] += 1;
         }
-
         return $dataToReturn;
     }
 
@@ -55,21 +54,15 @@ class HelperController
                 $response = $http->get('https://nominatim.openstreetmap.org/search.php?q=' . $city->city . '&format=jsonv2');
                 $response = json_decode($response->getBody()->getContents());
 
-                foreach ($response as $item) {
-                    if (strpos($item->display_name, 'Danmark')) {
-                        $lat = $item->lat;
-                        $lng = $item->lon;
+                if (strpos($response[0]->display_name, $city->zipCode)) {
+                    $city->lat = $response[0]->lat;
+                    $city->lng = $response[0]->lon;
 
-                        $city->lat = $lat;
-                        $city->lng = $lng;
-
-                        $city->save();
-                    }
+                    $city->save();
                 }
             }
             array_push($arrOfLatLng, array('cityName' => $city->city, 'zipCode' => $city->zipCode, 'lat' => $city->lat, 'lng' => $city->lng));
         }
-
-        return array_unique($arrOfLatLng, SORT_REGULAR);
+        return $arrOfLatLng;
     }
 }

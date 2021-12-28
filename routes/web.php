@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Dashboard routes
     Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('home');
+    Route::get('/broadcast', [\App\Http\Controllers\DashboardController::class, 'broadcast'])->name('broadcast');
 
     // User and profile routes
     Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);

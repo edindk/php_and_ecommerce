@@ -81,8 +81,12 @@
     <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', e => {
+            fetch('/broadcast');
+        })
         // Enable pusher logging - don't include this in production
         //Pusher.logToConsole = true;
+
         var pusher = new Pusher('e5217b92bbac90d908ee', {
             cluster: 'eu'
         });
