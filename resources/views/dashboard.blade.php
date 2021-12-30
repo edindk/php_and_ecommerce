@@ -24,7 +24,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Sales in DKK -->
-                        <canvas id="salesInDkk" width="400" height="520"></canvas>
+                        <canvas id="salesInDkk" width="400" height="220"></canvas>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Orders per month -->
-                        <canvas id="ordersPerMonth" class="chart-canvas" height="520"></canvas>
+                        <canvas id="ordersPerMonth" class="chart-canvas" height="350"></canvas>
                     </div>
                 </div>
             </div>
@@ -219,12 +219,6 @@
             mapInit();
         }
 
-        document.addEventListener('DOMContentLoaded', e => {
-            salesInDkk();
-            ordersPrMonth();
-            mapInit();
-            fetch('/broadcast');
-        })
         // Enable pusher logging - don't include this in production
         //Pusher.logToConsole = true;
 
@@ -239,5 +233,10 @@
             updateOrdersPerMonth(data['chartData']);
             updateMap(data['latLngData']);
         });
+
+        salesInDkk();
+        ordersPrMonth();
+        mapInit();
+        fetch('/broadcast');
     </script>
 @endpush
