@@ -23,7 +23,6 @@ class HelperController
         10 => array('date' => 'Oktober', 'total' => 0, 'numbOfOrders' => 0),
         11 => array('date' => 'November', 'total' => 0, 'numbOfOrders' => 0),
         12 => array('date' => 'December', 'total' => 0, 'numbOfOrders' => 0),
-
     ];
 
     public static function GenerateDataWithTotalAndDate()
