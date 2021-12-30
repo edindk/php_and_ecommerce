@@ -81,34 +81,20 @@
     <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', e => {
-            fetch('/broadcast');
-        })
-        // Enable pusher logging - don't include this in production
-        //Pusher.logToConsole = true;
+        let chartData = @json($chartData);
+        let listOfLatLng = @json($latLngData);
+        let salesInDkkChart;
+        let ordersPerMonthChart;
 
-        var pusher = new Pusher('e5217b92bbac90d908ee', {
-            cluster: 'eu'
-        });
-
-        var channel = pusher.subscribe('test');
-
-        channel.bind('App\\Events\\ShowDashboardData', function (data) {
-            salesInDkk(data['chartData']);
-            ordersPerMonth(data['chartData']);
-            mapInit(data['latLngData']);
-        });
-
-        let salesInDkk = (chartData) => {
+        function salesInDkk() {
             let labelsForLineChart = Object.values(chartData).map(function (item) {
                 return item['date'];
             });
             let dataForLineChart = Object.values(chartData).map(function (item) {
                 return item['total'];
             });
-
-            const ctx = document.getElementById('salesInDkk').getContext('2d');
-            const salesInDkkChart = new Chart(ctx, {
+            let ctx = document.getElementById('salesInDkk').getContext('2d');
+            salesInDkkChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labelsForLineChart,
@@ -116,10 +102,10 @@
                         label: 'Salg',
                         data: dataForLineChart,
                         backgroundColor: [
-                            'rgb(94,114,228)'
+                            'rgba(94,114,228)'
                         ],
                         borderColor: [
-                            'rgb(94,114,228)'
+                            'rgba(94,114,228)'
                         ],
                         borderWidth: 1
                     }]
@@ -134,26 +120,26 @@
             });
             var salesInDKKSpinner = document.getElementById('salesInDKKSpinner');
             salesInDKKSpinner.style.display = "none";
-        };
-        let ordersPerMonth = (chartData) => {
+        }
+
+        function ordersPrMonth() {
             let labelsForBarChart = Object.values(chartData).map(function (item) {
                 return item['date'];
             });
             let dataForBarChart = Object.values(chartData).map(function (item) {
                 return item['numbOfOrders'];
             });
-
             const ctx = document.getElementById('ordersPerMonth').getContext('2d');
-            const ordersPerMonth = new Chart(ctx, {
+            ordersPerMonthChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labelsForBarChart,
                     datasets: [{
                         label: 'Antal ordre',
                         data: dataForBarChart,
-                        backgroundColor: 'rgb(94,114,228)',
-                        borderColor: 'rgb(94,114,228)',
-                        borderWidth: 1
+                        backgroundColor: 'rgba(94,114,228)',
+                        borderColor: 'rgba(94,114,228)',
+                        borderWidth: 1,
                     }]
                 },
                 options: {
@@ -166,9 +152,9 @@
             });
             var salesPrMonthSpinner = document.getElementById('salesPrMonthSpinner');
             salesPrMonthSpinner.style.display = "none";
-        };
-        let mapInit = (latLngData) => {
-            let listOfLatLng = latLngData
+        }
+
+        function mapInit() {
             // Tømmer markers kollektionen
             let markers = [];
             // Opretter nyt Google Maps og opbevarer det i map
@@ -200,5 +186,58 @@
             var customerOverviewSpinner = document.getElementById('customerOverviewSpinner');
             customerOverviewSpinner.style.display = "none";
         }
+
+        function updateSalesInDkk(data) {
+            var salesInDKKSpinner = document.getElementById('salesInDKKSpinner');
+            salesInDKKSpinner.style.display = "block";
+            let labelsForLineChart = Object.values(data).map(function (item) {
+                return item['date'];
+            });
+            let dataForLineChart = Object.values(data).map(function (item) {
+                return item['total'];
+            });
+            salesInDkkChart.data.labels = labelsForLineChart
+            salesInDkkChart.data.datasets[0]['data'] = dataForLineChart
+            salesInDKKSpinner.style.display = "none";
+            salesInDkkChart.update();
+        }
+
+        function updateOrdersPerMonth(data) {
+            let labelsForBarChart = Object.values(data).map(function (item) {
+                return item['date'];
+            });
+            let dataForBarChart = Object.values(data).map(function (item) {
+                return item['numbOfOrders'];
+            });
+            ordersPerMonthChart.data.labels = labelsForBarChart
+            ordersPerMonthChart.data.datasets[0]['data'] = dataForBarChart
+            ordersPerMonthChart.update();
+        }
+
+        function updateMap(latLngData) {
+            listOfLatLng = latLngData;
+            mapInit();
+        }
+
+        document.addEventListener('DOMContentLoaded', e => {
+            salesInDkk();
+            ordersPrMonth();
+            mapInit();
+            fetch('/broadcast');
+        })
+        // Enable pusher logging - don't include this in production
+        //Pusher.logToConsole = true;
+
+        var pusher = new Pusher('e5217b92bbac90d908ee', {
+            cluster: 'eu'
+        });
+
+        var channel = pusher.subscribe('test');
+
+        channel.bind('App\\Events\\ShowDashboardData', function (data) {
+            updateSalesInDkk(data['chartData']);
+            updateOrdersPerMonth(data['chartData']);
+            updateMap(data['latLngData']);
+        });
     </script>
 @endpush

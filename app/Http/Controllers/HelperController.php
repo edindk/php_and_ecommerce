@@ -25,43 +25,62 @@ class HelperController
         12 => array('date' => 'December', 'total' => 0, 'numbOfOrders' => 0),
     ];
 
-    public static function GenerateDataWithTotalAndDate()
+    public static function generateDataWithTotalAndDate()
     {
-        $invoices = Invoice::all();
-        $dataToReturn = HelperController::$tempData;
+        return \Cache::rememberForever('dataWithTotalAndDate', function () {
+            $invoices = Invoice::all();
+            $dataToReturn = HelperController::$tempData;
 
-        foreach ($invoices as $invoice) {
-            $date = new \DateTime($invoice->paidDate);
-            $date = date_format($date, 'm');
+            foreach ($invoices as $invoice) {
+                $date = new \DateTime($invoice->paidDate);
+                $date = date_format($date, 'm');
 
-            $dataToReturn[(int)$date]['total'] += $invoice->total;
-            $dataToReturn[(int)$date]['numbOfOrders'] += 1;
-        }
-        return $dataToReturn;
+                $dataToReturn[(int)$date]['total'] += $invoice->total;
+                $dataToReturn[(int)$date]['numbOfOrders'] += 1;
+            }
+            return $dataToReturn;
+        });
     }
 
-    public static function GetLatLng()
+    public static function getLatLng()
     {
-        $customers = Customer::all();
-        $arrOfLatLng = [];
+        return \Cache::rememberForever('latLng', function () {
 
-        foreach ($customers as $customer) {
-            $city = City::where('zipCode', $customer->zipCode)->first();
+            $customers = Customer::all();
+            $arrOfLatLng = [];
 
-            if ($city->lat == null && $city->lng == null) {
-                $http = new Client;
-                $response = $http->get('https://nominatim.openstreetmap.org/search.php?q=' . $city->city . '&format=jsonv2');
-                $response = json_decode($response->getBody()->getContents());
+            foreach ($customers as $customer) {
+                $city = City::where('zipCode', $customer->zipCode)->first();
 
-                if (strpos($response[0]->display_name, $city->zipCode)) {
-                    $city->lat = $response[0]->lat;
-                    $city->lng = $response[0]->lon;
+                if ($city->lat == null && $city->lng == null) {
+                    $http = new Client;
+                    $response = $http->get('https://nominatim.openstreetmap.org/search.php?q=' . $city->city . '&format=jsonv2');
+                    $response = json_decode($response->getBody()->getContents());
 
-                    $city->save();
+                    if (strpos($response[0]->display_name, $city->zipCode)) {
+                        $city->lat = $response[0]->lat;
+                        $city->lng = $response[0]->lon;
+
+                        $city->save();
+                    }
                 }
+                array_push($arrOfLatLng, array('cityName' => $city->city, 'zipCode' => $city->zipCode, 'lat' => $city->lat, 'lng' => $city->lng));
             }
-            array_push($arrOfLatLng, array('cityName' => $city->city, 'zipCode' => $city->zipCode, 'lat' => $city->lat, 'lng' => $city->lng));
-        }
-        return $arrOfLatLng;
+            return $arrOfLatLng;
+        });
+    }
+
+    public static function updateDataWithTotalAndDate()
+    {
+        \Cache::forget('dataWithTotalAndDate');
+
+        return HelperController::generateDataWithTotalAndDate();
+    }
+
+    public static function updateLatLng()
+    {
+        \Cache::forget('latLng');
+
+        return HelperController::getLatLng();
     }
 }

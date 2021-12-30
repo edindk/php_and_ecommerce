@@ -9,13 +9,15 @@ class DashboardController extends Controller
 
     public function index()
     {
-        return view('dashboard');
+        $chartData = HelperController::generateDataWithTotalAndDate();
+        $latLngData = HelperController::getLatLng();
+        return view('dashboard', ['chartData' => $chartData, 'latLngData' => $latLngData]);
     }
 
     public function broadcast()
     {
-        $chartData = HelperController::GenerateDataWithTotalAndDate();
-        $latLngData = HelperController::GetLatLng();
+        $chartData = HelperController::updateDataWithTotalAndDate();
+        $latLngData = HelperController::updateLatLng();
 
         event(new ShowDashboardData($chartData, $latLngData));
     }
