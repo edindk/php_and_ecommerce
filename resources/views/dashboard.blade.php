@@ -237,6 +237,10 @@
         salesInDkk();
         ordersPrMonth();
         mapInit();
-        fetch('/broadcast');
+
+
+        document.addEventListener('DOMContentLoaded', e => {
+            fetch('/broadcast');
+        })
     </script>
 @endpush

@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\ShowDashboardData;
-use App\Http\Controllers\HelperController;
 
 class GetDashboardData
 {
